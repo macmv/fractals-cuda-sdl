@@ -1,5 +1,3 @@
-class Fractal;
-
 #include <mathfu/vector.h>
 
 #ifndef FRACTAL_H_
@@ -8,17 +6,13 @@ class Fractal;
 using namespace mathfu;
 
 class Fractal {
-  private: Vector<double, 3> pos;
-  public: Fractal();
+  protected: Vector<double, 3>* pos;
 
-  public: double DE(Vector<double, 3> target);
+  public: double DE(Vector<double, 3>* target);
 };
 
 class BasicSphere: public Fractal {
-  private: Vector<double, 3> pos;
-  public: BasicSphere();
-
-  public: double DE(Vector<double, 3> target);
+  public: double DE(Vector<double, 3>* target);
 };
 
 #endif

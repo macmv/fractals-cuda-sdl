@@ -1,0 +1,51 @@
+
+# WARNING: THIS TOOK AN HOUR!!!! DON'T EVER TRY AND EDIT THIS!!!!
+
+CXX = nvcc
+DEPS = ./mathfu/include
+DEPS += $(foreach path,$(shell echo mathfu/dependencies/*),$(path)/include)
+LDFLAGS = -D_REENTRANT -lSDL2 $(foreach dep,$(DEPS),-I$(dep))
+# SRC_FILES = src/main.cu
+SRC_FILES = $(foreach path,$(shell echo src/*.cu),$(path))
+SRC_FILES += $(foreach path,$(shell echo src/**/*.cu),$(path))
+
+all: main
+
+main:
+	mkdir -p build
+	$(CXX) -o build/main $(foreach file,$(SRC_FILES),objects/$(shell echo $(shell echo $(file) | rev | cut -c4- | rev) | sed 's/^[^\/]*\///g').o) $(CFLAGS)
+
+%.o: %.cu
+	$(CXX) $(CFLAGS) $(CPPFLAGS) -c $<
+
+# main.o: render.o
+# 	mkdir -p objects
+# 	$(CXX) -o objects/main.o -c src/main.cu $(CFLAGS)
+#
+# camera.o:
+# 	mkdir -p objects/lib
+# 	$(CXX) -o objects/lib/camera.o -c src/lib/camera.cu $(CFLAGS)
+#
+# cuda_functions.o: fractal.o
+# 	mkdir -p objects/lib
+# 	$(CXX) -o objects/lib/cuda_functions.o -c src/lib/cuda_functions.cu $(CFLAGS)
+#
+# fractal.o:
+# 	mkdir -p objects/lib
+# 	$(CXX) -o objects/lib/fractal.o -c src/lib/fractal.cu $(CFLAGS)
+#
+# render.o: fractal.o cuda_functions.o camera.o
+# 	mkdir -p objects/lib
+# 	$(CXX) -o objects/lib/render.o -c src/lib/render.cu $(CFLAGS)
+
+# compile: $(SRC_FILES)
+# 	mkdir -p objects/lib
+# 	$(foreach file,$(SRC_FILES),$(CXX) -o objects/$(shell echo $(shell echo $(file) | rev | cut -c4- | rev) | sed 's/^[^\/]*\///g').o -c $(file) $(CFLAGS);)
+
+clean:
+	rm -r objects
+	rm -r build
+
+# test: src/test.cu
+# 	mkdir -p build
+# 	$(CXX) -o build/test src/test.cu $(CFLAGS)

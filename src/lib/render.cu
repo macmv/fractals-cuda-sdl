@@ -6,7 +6,7 @@ Render::Render() {
   alive = initSDL();
   printf("Initialized SDL!\n");
 
-  int size = getNumPixels() * sizeof(float);
+  int size = getNumPixels() * sizeof(unsigned char) * 3; // because rgb
   cudaMalloc(&sharedBuffer, size);
 }
 
@@ -18,6 +18,11 @@ bool Render::initSDL() {
   window = SDL_CreateWindow("Fractals", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
   if (window == NULL) {
     printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+    return false;
+  }
+  renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+  if (renderer == NULL) {
+    printf("SDL_Render could not be created! SDL_Error: %s\n", SDL_GetError());
     return false;
   }
   return true;
@@ -35,12 +40,22 @@ void Render::update() {
   }
 }
 
-void Render::render() {
-  renderScreen();
+void Render::updateSurface() {
+  int size = getNumPixels() * sizeof(unsigned char) * 3; // because rgb
+  for (int pixel = 0; pixel < size; pixel += 3) {
+    SDL_SetRenderDrawColor(renderer,
+      sharedBuffer[pixel],
+      sharedBuffer[pixel] + 1,
+      sharedBuffer[pixel] + 2,
+      0xFF);
+    SDL_RenderDrawPoint(renderer, pixel % SCREEN_WIDTH, pixel / SCREEN_WIDTH);
+  }
+  SDL_RenderPresent(renderer);
 }
 
-void Render::drawPixel() {
-
+void Render::render() {
+  renderScreen(getNumPixels(), fractal, sharedBuffer);
+  updateSurface();
 }
 
 void Render::quit() {
@@ -53,10 +68,7 @@ int Render::getNumPixels() {
 }
 
 Camera* Render::getCamera() {
-  return camera;
-}
-float* Render::getSharedBuffer() {
-  return sharedBuffer;
+  return cam;
 }
 
 Fractal* Render::getFractal() {
