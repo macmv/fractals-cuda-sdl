@@ -1,12 +1,3 @@
 [submodule "mathfu"]
 	path = mathfu
 	url = http://http://github.com/google/mathfu.git
-	[submodule "mathfu/dependencies/fplutil"]
-		path = mathfu/dependencies/fplutil
-		url = http://github.com/google/fplutil.git
-	[submodule "mathfu/dependencies/vectorial"]
-		path = mathfu/dependencies/vectorial
-		url = http://github.com/scoopr/vectorial.git
-	[submodule "mathfu/dependencies/googletest"]
-		path = mathfu/dependencies/googletest
-		url = http://github.com/google/googletest.git
