@@ -6,8 +6,14 @@ Render::Render() {
   alive = initSDL();
   printf("Initialized SDL!\n");
 
-  int size = getNumPixels() * sizeof(unsigned char) * 3; // because rgb
-  cudaMalloc(&sharedBuffer, size);
+  printf("Allocating memory...\n");
+  bufferSize = getNumPixels() * sizeof(unsigned char) * 3; // because rgb
+  printf("Size: %d\n", bufferSize);
+  tempBuffer = (unsigned char*) malloc(bufferSize);
+  cudaMalloc((void**) &sharedBuffer, bufferSize);
+  cudaMemset(sharedBuffer, 0, bufferSize);
+  cudaDeviceSynchronize();
+  printf("Allocated memory!\n");
 }
 
 bool Render::initSDL() {
@@ -25,6 +31,7 @@ bool Render::initSDL() {
     printf("SDL_Render could not be created! SDL_Error: %s\n", SDL_GetError());
     return false;
   }
+  tex = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
   return true;
 }
 
@@ -33,6 +40,7 @@ bool Render::isAlive() {
 }
 
 void Render::update() {
+  printf("Updating\n");
   while(SDL_PollEvent(&e) != 0) {
     if(e.type == SDL_QUIT) {
       alive = false;
@@ -40,25 +48,28 @@ void Render::update() {
   }
 }
 
-void Render::updateSurface() {
-  int size = getNumPixels() * sizeof(unsigned char) * 3; // because rgb
-  for (int pixel = 0; pixel < size; pixel += 3) {
-    SDL_SetRenderDrawColor(renderer,
-      sharedBuffer[pixel],
-      sharedBuffer[pixel] + 1,
-      sharedBuffer[pixel] + 2,
-      0xFF);
-    SDL_RenderDrawPoint(renderer, pixel % SCREEN_WIDTH, pixel / SCREEN_WIDTH);
-  }
+void Render::updateWindow() {
+  printf("Updating surface\n");
+  cudaMemcpy(tempBuffer, sharedBuffer, bufferSize, cudaMemcpyDeviceToHost);
+  cudaDeviceSynchronize();
+  printf("Updating window\n");
+  SDL_UpdateTexture(tex, NULL, tempBuffer, SCREEN_WIDTH);
+  SDL_RenderCopy(renderer, tex, NULL, NULL);
   SDL_RenderPresent(renderer);
+  SDL_UpdateWindowSurface(window);
 }
 
 void Render::render() {
-  renderScreen(getNumPixels(), fractal, sharedBuffer);
-  updateSurface();
+  printf("Rendering\n");
+  // renderScreen(getNumPixels(), fractal, sharedBuffer);
+  updateWindow();
 }
 
 void Render::quit() {
+  free(tempBuffer);
+  cudaFree(sharedBuffer);
+  SDL_DestroyTexture(tex);
+  SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
   SDL_Quit();
 }

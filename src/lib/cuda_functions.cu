@@ -7,7 +7,7 @@ __global__ void drawPixel(int numPixels, Fractal* fractal, unsigned char* buffer
 }
 
 void renderScreen(int numPixels, Fractal* fractal, unsigned char* buffer) {
-  printf("Drawing screen!");
+  printf("Drawing screen!\n");
   drawPixel<<<1, 128>>>(
     numPixels,
     fractal,
