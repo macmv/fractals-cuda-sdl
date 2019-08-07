@@ -10,7 +10,7 @@ OBJS=$(subst .cc,.o,$(SRCS))
 all: main
 
 main: $(OBJS)
-	$(CU) -o build/main $(OBJS) $(CPPFLAGS) 
+	$(CU) -o build/main $(OBJS) $(CPPFLAGS)
 
 main.o: main.cu main.h
 
