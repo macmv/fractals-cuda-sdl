@@ -1,29 +1,22 @@
-CU = nvcc
-RM = rm -f
-CPPFLAGS = -g $(shell root-config --cflags)
-CPPFLAGS += -Imathfu/include -Imathfu/dependencies/vectorial/include -Imathfu/dependencies/fplutil/include -Imathfu/dependencies/googletest/include
-CPPFLAGS += -lSDL2
 
-SRCS=src/main.cu src/lib/render.cu src/lib/fractal.cu src/lib/camera.cu src/lib/cuda_functions.cu
-OBJS=$(subst .cc,.o,$(SRCS))
+TARGET = fractal
+SRC_DIR = src
+OBJ_DIR = obj
 
-all: main
+CU_FILES  = $(wildcard $(SRC_DIR)/*.cu) $(wildcard $(SRC_DIR)/**/*.cu)
+H_FILES   = $(wildcard $(SRC_DIR)/*.h) $(wildcard $(SRC_DIR)/**/*.h)
+OBJ_FILES = $(wildcard $(OBJ_DIR)/*.o) $(wildcard $(OBJ_DIR)/**/*.o)
 
-main: $(OBJS)
-	$(CU) -o build/main $(OBJS) $(CPPFLAGS)
+OBJS = $(patsubst %.cu,$(OBJ_DIR)/%.o,$(CU_FILES))
+OBJS := $(subst /src/,/,$(OBJS))
 
-main.o: main.cu main.h
+NVCC = nvcc
+NVCCFLAGS = -lSDL2
+INCLUDES = -Imathfu/include -Imathfu/dependencies/vectorial/include -Imathfu/dependencies/fplutil/include -Imathfu/dependencies/googletest/include
 
-render.o: render.cu render.h
+$(TARGET): $(OBJS)
+	$(NVCC) $(NVCCFLAGS) -o $@ $?
 
-fractal.o: fractal.cu fractal.h
-
-camera.o: camera.cu camera.h
-
-cuda_functions.o: cuda_functions.cu cuda_functions.h
-
-%.cu:
-	$(CU) $(CPPFLAGS) -c $<
-
-clean:
-	$(RM) $(OBJS)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cu $(CU_FILES)
+	echo $(OBJS)
+	$(NVCC) $(NVCCFLAGS) $(INCLUDES) -dc -o $@ $<
