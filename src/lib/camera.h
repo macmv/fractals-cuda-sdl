@@ -7,14 +7,17 @@
 using namespace mathfu;
 
 class Camera {
-  private: Vector<double, 3> pos;
-  private: Vector<double, 3> dir; // euler rotation in degrees
-  private: double xFov; // in degress
-  private: double yFov; // in degrees
-  private: SDL_Surface* surf;
+private:
+  Vector<double, 3> pos;
+  Vector<double, 3> dir; // euler rotation in degrees
+  double xFov; // in degress
+  double yFov; // in degrees
+  SDL_Surface* surf;
 
-  public: Camera(SDL_Surface* surf1);
-  public: Vector<double, 3> getAngle(int pixel);
+public:
+  Camera(SDL_Surface* surf1);
+  Vector<double, 3> getAngle(int pixel);
+  __device__ Vector<double, 3> getPoint(int x, int y);
 };
 
 #endif

@@ -1,18 +1,26 @@
 #include <mathfu/vector.h>
+#include <SDL2/SDL.h>
+#include <math.h>
+#include "camera.h"
 
 #ifndef FRACTAL_H_
 #define FRACTAL_H_
 
 using namespace mathfu;
 
-class Fractal {
-  protected: Vector<double, 3>* pos;
+typedef double(*DEfunc)(double x, double y, double z);
 
-  public: double DE(Vector<double, 3>* target);
+class Fractal {
+protected:
+  Vector<double, 3>* pos;
+
+public:
+  __device__ double DE(double x, double y, double z);
 };
 
 class BasicSphere: public Fractal {
-  public: double DE(Vector<double, 3>* target);
+public:
+  __device__ double DE(double x, double y, double z);
 };
 
 #endif

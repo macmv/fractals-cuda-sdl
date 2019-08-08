@@ -31,7 +31,7 @@ bool Render::initSDL() {
     printf("SDL_Render could not be created! SDL_Error: %s\n", SDL_GetError());
     return false;
   }
-  tex = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+  tex = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
   return true;
 }
 
@@ -40,7 +40,6 @@ bool Render::isAlive() {
 }
 
 void Render::update() {
-  printf("Updating\n");
   while(SDL_PollEvent(&e) != 0) {
     if(e.type == SDL_QUIT) {
       alive = false;
@@ -49,10 +48,8 @@ void Render::update() {
 }
 
 void Render::updateWindow() {
-  printf("Updating surface\n");
   cudaMemcpy(tempBuffer, sharedBuffer, bufferSize, cudaMemcpyDeviceToHost);
   cudaDeviceSynchronize();
-  printf("Updating window\n");
   SDL_UpdateTexture(tex, NULL, tempBuffer, SCREEN_WIDTH * 4);
   SDL_RenderCopy(renderer, tex, NULL, NULL);
   SDL_RenderPresent(renderer);
@@ -60,8 +57,7 @@ void Render::updateWindow() {
 }
 
 void Render::render() {
-  printf("Rendering\n");
-  renderScreen(getNumPixels(), fractal, sharedBuffer);
+  renderScreen(getNumPixels(), fractal, cam, sharedBuffer);
   updateWindow();
 }
 

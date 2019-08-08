@@ -1,4 +1,4 @@
-#include "lib/render.h"
+#include "main.h"
 
 int main(int argc, char* args[]) {
   Render* render = new Render();

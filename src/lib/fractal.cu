@@ -2,10 +2,12 @@
 
 using namespace mathfu;
 
-double Fractal::DE(Vector<double, 3>* target) {
+__device__
+double Fractal::DE(double x, double y, double z) {
   return 0;
 }
 
-double BasicSphere::DE(Vector<double, 3>* target) {
-  return target->Distance(*target, *pos);
+__device__
+double BasicSphere::DE(double x, double y, double z) {
+  return 0.9;
 }
