@@ -18,5 +18,5 @@ $(TARGET): $(OBJS)
 	$(NVCC) $(NVCCFLAGS) -o $@ $?
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cu $(CU_FILES)
-	echo $(OBJS)
+	mkdir -p $(dir $@)
 	$(NVCC) $(NVCCFLAGS) $(INCLUDES) -dc -o $@ $<
