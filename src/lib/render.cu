@@ -7,7 +7,7 @@ Render::Render() {
   printf("Initialized SDL!\n");
 
   printf("Allocating memory...\n");
-  bufferSize = getNumPixels() * sizeof(unsigned char) * 3; // because rgb
+  bufferSize = getNumPixels() * sizeof(unsigned char) * 4; // because rgba
   printf("Size: %d\n", bufferSize);
   tempBuffer = (unsigned char*) malloc(bufferSize);
   cudaMalloc((void**) &sharedBuffer, bufferSize);
@@ -31,7 +31,7 @@ bool Render::initSDL() {
     printf("SDL_Render could not be created! SDL_Error: %s\n", SDL_GetError());
     return false;
   }
-  tex = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+  tex = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
   return true;
 }
 
@@ -53,7 +53,7 @@ void Render::updateWindow() {
   cudaMemcpy(tempBuffer, sharedBuffer, bufferSize, cudaMemcpyDeviceToHost);
   cudaDeviceSynchronize();
   printf("Updating window\n");
-  SDL_UpdateTexture(tex, NULL, tempBuffer, SCREEN_WIDTH);
+  SDL_UpdateTexture(tex, NULL, tempBuffer, SCREEN_WIDTH * 4);
   SDL_RenderCopy(renderer, tex, NULL, NULL);
   SDL_RenderPresent(renderer);
   SDL_UpdateWindowSurface(window);
@@ -61,7 +61,7 @@ void Render::updateWindow() {
 
 void Render::render() {
   printf("Rendering\n");
-  // renderScreen(getNumPixels(), fractal, sharedBuffer);
+  renderScreen(getNumPixels(), fractal, sharedBuffer);
   updateWindow();
 }
 
