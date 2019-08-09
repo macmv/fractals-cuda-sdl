@@ -12,7 +12,7 @@ void drawPixels(int numPixels,
 Fractal* fractal,
 unsigned char* buffer,
 int numThreads,
-Camera* cam,
+Camera cam,
 unsigned int millis,
 int screen_width,
 int screen_height);

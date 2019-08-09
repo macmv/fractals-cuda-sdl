@@ -11,7 +11,7 @@ const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
 
 class Render {
-  // things are set to NULL so we can see if there is an issue initializing them in bool initSDL();
+  // things are set to NULL so we can see if there is an issue initializing them in initSDL();
 private:
   Fractal* fractal;
   SDL_Window* window = NULL;

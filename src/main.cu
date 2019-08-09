@@ -1,6 +1,6 @@
 #include "main.h"
 
-int main(int argc, char* args[]) {
+int main(int argc, char** args) {
   Render* render = new Render();
 
   while (render->isAlive()) {

@@ -13,14 +13,14 @@ void drawPixels(int numPixels,
   Fractal* fractal,
   unsigned char* buffer,
   int numThreads,
-  Camera* cam,
+  Camera cam,
   unsigned int millis,
   int screen_width,
   int screen_height) {
   for (int pixel = threadIdx.x; pixel < numPixels; pixel += numThreads) {
     double dst = fractal->DE(0, 0, 1.5);
     double delta[3];
-    cam->getDeltaFrom2D((double) (pixel % screen_width) / screen_width, (double) (pixel / screen_width) / screen_width, delta);
+    cam.getDeltaFrom2D((double) (pixel % screen_width) / screen_width, (double) (pixel / screen_width) / screen_width, delta);
     buffer[pixel * 4 + 0] = (unsigned char) (delta[0] * 256); // r
     buffer[pixel * 4 + 1] = (unsigned char) (delta[1] * 256); // g
     buffer[pixel * 4 + 2] = (unsigned char) (delta[2] * 256); // b
@@ -29,13 +29,13 @@ void drawPixels(int numPixels,
 }
 
 void renderScreen(int numPixels, Fractal* fractal, Camera* cam, unsigned char* buffer, int screen_width, int screen_height) {
-  int numThreads = 1024;
+  int numThreads = 256;
   drawPixels<<<1, numThreads>>>(
     numPixels,
     fractal,
     buffer,
     numThreads,
-    cam,
+    *cam, // CANNOT ACCESS OBJECT MEMBERS UNLESS PASSED IN BY VALUE
     SDL_GetTicks(),
     screen_width,
     screen_height);
