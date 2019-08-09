@@ -1,7 +1,6 @@
 #include <mathfu/vector.h>
 #include <SDL2/SDL.h>
 #include <math.h>
-#include "camera.h"
 
 #ifndef FRACTAL_H_
 #define FRACTAL_H_

@@ -4,7 +4,7 @@ Render::Render() {
   fractal = new BasicSphere();
   printf("Initializing SDL...\n");
   alive = initSDL();
-  printf("Initialized SDL!\n");
+  printf("Initialized SDL\n");
 
   printf("Allocating memory...\n");
   bufferSize = getNumPixels() * sizeof(unsigned char) * 4; // because rgba
@@ -13,7 +13,9 @@ Render::Render() {
   cudaMalloc((void**) &sharedBuffer, bufferSize);
   cudaMemset(sharedBuffer, 0, bufferSize);
   cudaDeviceSynchronize();
-  printf("Allocated memory!\n");
+  printf("Allocated memory\n");
+
+  cam = new Camera();
 }
 
 bool Render::initSDL() {
@@ -57,11 +59,12 @@ void Render::updateWindow() {
 }
 
 void Render::render() {
-  renderScreen(getNumPixels(), fractal, cam, sharedBuffer);
+  renderScreen(getNumPixels(), fractal, cam, sharedBuffer, SCREEN_WIDTH, SCREEN_HEIGHT);
   updateWindow();
 }
 
 void Render::quit() {
+  cam->free();
   free(tempBuffer);
   cudaFree(sharedBuffer);
   SDL_DestroyTexture(tex);
