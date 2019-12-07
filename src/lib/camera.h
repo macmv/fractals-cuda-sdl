@@ -16,6 +16,7 @@ public:
   __device__ void getDeltaFrom2D(double x, double y, double* delta); // delta is a len 3 array that is a normalized direction vector
   void free();
   void rotate(double x, double y);
+  void translate(double x, double y, double z);
 };
 
 #endif

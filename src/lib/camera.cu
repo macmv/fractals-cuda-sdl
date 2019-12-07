@@ -42,3 +42,9 @@ void Camera::rotate(double x, double y) {
   dir[0] += x;
   dir[1] += y;
 }
+
+void Camera::translate(double x, double y, double z) {
+  pos[0] += x;
+  pos[1] += y;
+  pos[2] += z;
+}

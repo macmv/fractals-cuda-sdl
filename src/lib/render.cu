@@ -42,12 +42,17 @@ bool Render::isAlive() {
 }
 
 void Render::update() {
-  while(SDL_PollEvent(&e) != 0) {
-    if(e.type == SDL_QUIT) {
+  while (SDL_PollEvent(&e) != 0) {
+    if (e.type == SDL_QUIT) {
       alive = false;
+    } else if (e.type == SDL_KEYDOWN) {
+      printf("Pressed key!\n");
+      if (e.key.keysym.sym == SDLK_w) {
+        printf("Pressed W!\n");
+      }
     }
   }
-  cam->rotate(2, 0);
+  cam->translate(0.01, 0, 0);
 }
 
 void Render::updateWindow() {
