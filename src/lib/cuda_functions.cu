@@ -18,6 +18,8 @@ void drawPixels(int numPixels,
     int screen_width,
     int screen_height) {
   for (int pixel = threadIdx.x; pixel < numPixels; pixel += numThreads) {
+    clock_t start_time = clock();
+    clock_t stop_time;
     int steps = 0;
     double rayPos[3] = {cam.pos[0], cam.pos[1], cam.pos[2]};
     double rayDelta[3];
@@ -53,11 +55,13 @@ void drawPixels(int numPixels,
       buffer[pixel * 4 + 2] = 0xFF; // b
       buffer[pixel * 4 + 3] = 0x00; // a
     }
+    stop_time = clock();
+    printf("Time: %f microseconds\n", (int) (stop_time - start_time) / 1987.0);
   }
 }
 
 void renderScreen(int numPixels, Fractal* fractal, Camera* cam, unsigned char* buffer, int screen_width, int screen_height) {
-  int numThreads = 256;
+  int numThreads = 1024;
   drawPixels<<<1, numThreads>>>( // function assumes 1 block, don't change
   numPixels,
   fractal,
