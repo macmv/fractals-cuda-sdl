@@ -21,14 +21,14 @@ void drawPixels(int numPixels,
     int steps = 0;
     double rayPos[3] = {cam.pos[0], cam.pos[1], cam.pos[2]};
     double rayDelta[3];
-    cam.getDeltaFrom2D((double) (pixel % screen_width) / screen_width, (double) (pixel / screen_width) / screen_width, rayDelta);
+    double x = (double) (pixel % screen_width) / screen_width;
+    double y = (double) (pixel / screen_width) / screen_height;
+    cam.getDeltaFrom2D(x, y, rayDelta);
+    // printf("x, y: %f %f\n", x, y);
+    // printf("Ray delta: %f %f %f\n", rayDelta[0], rayDelta[1], rayDelta[2]);
     bool hit;
-    // printf("rayPos: %f, %f, %f\n", rayPos[0], rayPos[1], rayPos[2]);
-    // printf("rayDelta: %f, %f, %f\n", rayDelta[0], rayDelta[1], rayDelta[2]);
     while (true) {
-      // double dst = 0;
       double dst = static_cast<BasicSphere*>(fractal)->DE(rayPos);
-      // printf("dst: %f\n", dst);
       if (dst > DST_MAX) {
         hit = false;
         break;
@@ -43,12 +43,13 @@ void drawPixels(int numPixels,
       steps += 1;
     }
     if (hit) {
-      buffer[pixel * 4 + 0] = (unsigned char) (steps * 16); // r
-      buffer[pixel * 4 + 1] = (unsigned char) (steps * 16); // g
-      buffer[pixel * 4 + 2] = (unsigned char) (steps * 16); // b
+      buffer[pixel * 4 + 0] = (unsigned char) (steps * 4); // r
+      buffer[pixel * 4 + 1] = (unsigned char) (steps * 4); // g
+      buffer[pixel * 4 + 2] = (unsigned char) (steps * 4); // b
       buffer[pixel * 4 + 3] = 0x00; // a
     } else {
-      buffer[pixel * 4 + 0] = 0x00; // r
+      printf("Missed!");
+      buffer[pixel * 4 + 0] = 0xFF; // r
       buffer[pixel * 4 + 1] = 0x00; // g
       buffer[pixel * 4 + 2] = 0xFF; // b
       buffer[pixel * 4 + 3] = 0x00; // a

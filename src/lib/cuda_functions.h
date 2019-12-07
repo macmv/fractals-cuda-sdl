@@ -8,7 +8,7 @@
 #define CUDA_FUNCTIONS_H_
 
 const double DST_MAX = 10;
-const double DST_MIN = 0.001;
+const double DST_MIN = 0.0001;
 
 __global__
 void drawPixels(int numPixels,
