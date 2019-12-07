@@ -51,7 +51,7 @@ void Render::update() {
       cam->keyUp(e.key.keysym.sym);
     }
   }
-  cam->update();
+  cam->update(window);
 }
 
 void Render::updateWindow() {

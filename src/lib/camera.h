@@ -19,7 +19,7 @@ public:
   void free();
   void rotate(double x, double y);
   void translate(double x, double y, double z);
-  void update();
+  void update(SDL_Window* window);
   void keyDown(SDL_Keycode key);
   void keyUp(SDL_Keycode key);
 };

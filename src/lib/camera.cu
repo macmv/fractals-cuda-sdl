@@ -49,7 +49,7 @@ void Camera::translate(double x, double y, double z) {
   pos[2] += z;
 }
 
-void Camera::update() {
+void Camera::update(SDL_Window* window) {
   if (keys.find(SDLK_w) != keys.end()) {
     translate(0.01, 0, 0);
   }
@@ -61,6 +61,16 @@ void Camera::update() {
   }
   if (keys.find(SDLK_a) != keys.end()) {
     translate(0, 0, -0.01);
+  }
+  int w, h;
+  SDL_GetWindowSize(window, &w, &h);
+  int x, y;
+  SDL_GetMouseState(&x, &y);
+  SDL_WarpMouseInWindow(window, w / 2, h / 2);
+  if (x != 0 || y != 0) {
+    int delta_x = x - w / 2;
+    int delta_y = y - h / 2;
+    rotate(delta_x / 20.0, delta_y / 2000.0);
   }
 }
 
