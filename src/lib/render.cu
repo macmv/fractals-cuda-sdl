@@ -46,13 +46,12 @@ void Render::update() {
     if (e.type == SDL_QUIT) {
       alive = false;
     } else if (e.type == SDL_KEYDOWN) {
-      printf("Pressed key!\n");
-      if (e.key.keysym.sym == SDLK_w) {
-        printf("Pressed W!\n");
-      }
+      cam->keyDown(e.key.keysym.sym);
+    } else if (e.type == SDL_KEYUP) {
+      cam->keyUp(e.key.keysym.sym);
     }
   }
-  cam->translate(0.01, 0, 0);
+  cam->update();
 }
 
 void Render::updateWindow() {

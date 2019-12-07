@@ -48,3 +48,26 @@ void Camera::translate(double x, double y, double z) {
   pos[1] += y;
   pos[2] += z;
 }
+
+void Camera::update() {
+  if (keys.find(SDLK_w) != keys.end()) {
+    translate(0.01, 0, 0);
+  }
+  if (keys.find(SDLK_s) != keys.end()) {
+    translate(-0.01, 0, 0);
+  }
+  if (keys.find(SDLK_d) != keys.end()) {
+    translate(0, 0, 0.01);
+  }
+  if (keys.find(SDLK_a) != keys.end()) {
+    translate(0, 0, -0.01);
+  }
+}
+
+void Camera::keyDown(SDL_Keycode key) {
+  keys.insert(key);
+}
+
+void Camera::keyUp(SDL_Keycode key) {
+  keys.erase(key);
+}
