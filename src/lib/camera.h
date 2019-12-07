@@ -9,8 +9,7 @@ class Camera {
 public:
   double* pos; // [0, 1, 2] -> x, y, z respectively
   double* dir; // [0] is 0-1 x rotation, where 0 is 0 deg and 1 is 360 deg, [1] is 0-1 y rot where 1 is straight up and 0 is straight down
-  const double xFov = 1.0 / 16.0; // in fractions of 360
-  const double yFov = 1.0 / 16.0; // in fractions of 360
+  const double fov = 70; // in degrees
 
 public:
   Camera();

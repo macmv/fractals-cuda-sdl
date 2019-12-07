@@ -48,7 +48,6 @@ void drawPixels(int numPixels,
       buffer[pixel * 4 + 2] = (unsigned char) (steps * 4); // b
       buffer[pixel * 4 + 3] = 0x00; // a
     } else {
-      printf("Missed!");
       buffer[pixel * 4 + 0] = 0xFF; // r
       buffer[pixel * 4 + 1] = 0x00; // g
       buffer[pixel * 4 + 2] = 0xFF; // b

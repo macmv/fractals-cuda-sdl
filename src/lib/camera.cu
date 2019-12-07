@@ -24,9 +24,9 @@ Camera::Camera() {
 
 __device__
 void Camera::getDeltaFrom2D(double x, double y, double* delta) {
-  delta[0] = cos((dir[0] + (x - 0.5) * xFov) * 2 * M_PI); // should not nned to be normalized if my math is right
-  delta[1] = sin((dir[0] + (y - 0.5) * xFov) * 2 * M_PI);
-  delta[2] = 0;
+  delta[0] = cos((dir[0] + (x - 0.5) * fov) / 180 * M_PI);
+  delta[1] = dir[1] + (y - 0.5) * (fov * (16.0/9)) / 180;
+  delta[2] = sin((dir[0] + (x - 0.5) * fov) / 180 * M_PI);
 }
 
 void Camera::free() {
