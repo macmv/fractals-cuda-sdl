@@ -37,3 +37,8 @@ void Camera::free() {
   cudaFree(pos);
   cudaFree(dir);
 }
+
+void Camera::rotate(double x, double y) {
+  dir[0] += x;
+  dir[1] += y;
+}

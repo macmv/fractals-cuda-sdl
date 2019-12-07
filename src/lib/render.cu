@@ -47,6 +47,7 @@ void Render::update() {
       alive = false;
     }
   }
+  cam->rotate(2, 0);
 }
 
 void Render::updateWindow() {
