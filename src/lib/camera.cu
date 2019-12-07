@@ -44,9 +44,11 @@ void Camera::rotate(double x, double y) {
 }
 
 void Camera::translate(double x, double y, double z) {
-  pos[0] += x;
+  pos[0] += cos(dir[0] / 180 * M_PI) * x;
+  pos[0] += cos((dir[0] + 90) / 180 * M_PI) * z;
   pos[1] += y;
-  pos[2] += z;
+  pos[2] += sin(dir[0] / 180 * M_PI) * x;
+  pos[2] += sin((dir[0] + 90) / 180 * M_PI) * z;
 }
 
 void Camera::update(SDL_Window* window) {
