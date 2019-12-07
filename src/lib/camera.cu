@@ -27,6 +27,10 @@ void Camera::getDeltaFrom2D(double x, double y, double* delta) {
   delta[0] = cos((dir[0] + (x - 0.5) * fov) / 180 * M_PI);
   delta[1] = dir[1] + (y - 0.5) * (fov * (16.0/9)) / 180;
   delta[2] = sin((dir[0] + (x - 0.5) * fov) / 180 * M_PI);
+  float len = sqrt(pow(delta[0], 2) + pow(delta[1], 2) + pow(delta[2], 2));
+  delta[0] /= len;
+  delta[1] /= len;
+  delta[2] /= len;
 }
 
 void Camera::free() {
