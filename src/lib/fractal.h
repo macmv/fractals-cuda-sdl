@@ -1,25 +1,20 @@
-#include <mathfu/vector.h>
 #include <SDL2/SDL.h>
 #include <math.h>
 
 #ifndef FRACTAL_H_
 #define FRACTAL_H_
 
-using namespace mathfu;
-
-typedef double(*DEfunc)(double x, double y, double z);
-
 class Fractal {
 protected:
-  Vector<double, 3>* pos;
+  double pos[3] = {0, 0, 0};
 
 public:
-  __device__ double DE(double x, double y, double z);
+  __device__ static double DE(double* rayPos);
 };
 
-class BasicSphere: public Fractal {
+class BasicSphere : public Fractal {
 public:
-  __device__ double DE(double x, double y, double z);
+  __device__ static double DE(double* rayPos);
 };
 
 #endif

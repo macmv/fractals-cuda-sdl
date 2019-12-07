@@ -76,11 +76,3 @@ void Render::quit() {
 int Render::getNumPixels() {
   return SCREEN_WIDTH * SCREEN_HEIGHT;
 }
-
-Camera* Render::getCamera() {
-  return cam;
-}
-
-Fractal* Render::getFractal() {
-  return fractal;
-}

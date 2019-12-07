@@ -30,11 +30,9 @@ public:
   bool isAlive();
   void update();
   void render();
-  void updateWindow();
   void quit();
+  void updateWindow();
   int getNumPixels();
-  Camera* getCamera();
-  Fractal* getFractal();
 private:
   bool initSDL();
 };
