@@ -8,13 +8,14 @@
 #define CUDA_FUNCTIONS_H_
 
 const double DST_MAX = 10;
-const double DST_MIN = 0.0001;
+const double DST_MIN = 0.01;
 
 __global__
 void drawPixels(int numPixels,
     Fractal* fractal,
     unsigned char* buffer,
     int numThreads,
+    int numBlocks,
     Camera cam,
     unsigned int millis,
     int screen_width,

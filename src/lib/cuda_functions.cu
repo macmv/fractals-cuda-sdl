@@ -13,24 +13,31 @@ void drawPixels(int numPixels,
     Fractal* fractal,
     unsigned char* buffer,
     int numThreads,
+    int numBlocks,
     Camera cam,
     unsigned int millis,
     int screen_width,
     int screen_height) {
-  for (int pixel = threadIdx.x; pixel < numPixels; pixel += numThreads) {
-    clock_t start_time = clock();
-    clock_t stop_time;
-    int steps = 0;
-    double rayPos[3] = {cam.pos[0], cam.pos[1], cam.pos[2]};
-    double rayDelta[3];
-    double x = (double) (pixel % screen_width) / screen_width;
-    double y = (double) (pixel / screen_width) / screen_height;
+  int steps;
+  bool hit;
+  double dst;
+  double rayPos[3];
+  double rayDelta[3];
+  double x, y;
+  for (int pixel = threadIdx.x + blockIdx.x * numThreads; pixel < numPixels; pixel += numThreads * numBlocks) {
+    rayPos[0] = cam.pos[0];
+    rayPos[1] = cam.pos[1];
+    rayPos[2] = cam.pos[2];
+    x = (double) (pixel % screen_width) / screen_width;
+    y = (double) (pixel / screen_width) / screen_height;
     cam.getDeltaFrom2D(x, y, rayDelta);
     // printf("x, y: %f %f\n", x, y);
     // printf("Ray delta: %f %f %f\n", rayDelta[0], rayDelta[1], rayDelta[2]);
-    bool hit;
+    steps = 0;
     while (true) {
-      double dst = static_cast<BasicSphere*>(fractal)->DE(rayPos);
+      // clock_t start_time = clock();
+      // clock_t stop_time;
+      dst = static_cast<BasicSphere*>(fractal)->DE(rayPos);
       if (dst > DST_MAX) {
         hit = false;
         break;
@@ -43,6 +50,8 @@ void drawPixels(int numPixels,
       rayPos[1] += rayDelta[1] * dst;
       rayPos[2] += rayDelta[2] * dst;
       steps += 1;
+      // stop_time = clock();
+      // printf("Time: %f microseconds\n", (int) (stop_time - start_time) / 1987.0);
     }
     if (hit) {
       buffer[pixel * 4 + 0] = (unsigned char) (steps * 4); // r
@@ -55,18 +64,18 @@ void drawPixels(int numPixels,
       buffer[pixel * 4 + 2] = 0xFF; // b
       buffer[pixel * 4 + 3] = 0x00; // a
     }
-    stop_time = clock();
-    printf("Time: %f microseconds\n", (int) (stop_time - start_time) / 1987.0);
   }
 }
 
 void renderScreen(int numPixels, Fractal* fractal, Camera* cam, unsigned char* buffer, int screen_width, int screen_height) {
   int numThreads = 1024;
-  drawPixels<<<1, numThreads>>>( // function assumes 1 block, don't change
+  int numBlocks = 32;
+  drawPixels<<<numBlocks, numThreads>>>(
   numPixels,
   fractal,
   buffer,
   numThreads,
+  numBlocks,
   *cam, // copying data because it needs to know xFov and yFov
   SDL_GetTicks(),
   screen_width,

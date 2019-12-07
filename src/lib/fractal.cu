@@ -7,5 +7,5 @@ double Fractal::DE(double* rayPos) {
 
 __device__
 double BasicSphere::DE(double* rayPos) {
-  return sqrt(pow(0 - rayPos[0], 2) + pow(0 - rayPos[1], 2) + pow(0 - rayPos[2], 2)) - 1;
+  return sqrt(-rayPos[0] * -rayPos[0] + -rayPos[1] * -rayPos[1] + -rayPos[2] * -rayPos[2]) - 1;
 }
