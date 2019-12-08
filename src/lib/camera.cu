@@ -27,12 +27,12 @@ __device__
 void Camera::getDeltaFrom2D(double x, double y, double* delta) {
   // if fov is 70 deg, xDeg will be from -35 to 35 across whole screen
   double xDeg = (x - 0.5) * fov;
-  double yDeg = (y - 0.5) * (fov * (screenWidth / screenHeight));
+  double yDeg = (y - 0.5) * (fov / ((double) screenWidth / screenHeight));
   double cosY = cos((dir[1] + yDeg) / 180 * M_PI);
   double sinY = sin((dir[1] + yDeg) / 180 * M_PI);
-  delta[0] = cos((dir[0] * cosY + xDeg) / 180 * M_PI);
-  delta[1] = sin((dir[0] * cosY + xDeg) / 180 * M_PI);
-  delta[2] = sinY;
+  delta[0] = cos((dir[0] + xDeg) / 180 * M_PI) * cosY;
+  delta[1] = sinY;
+  delta[2] = sin((dir[0] + xDeg) / 180 * M_PI) * cosY;
 }
 
 void Camera::free() {
