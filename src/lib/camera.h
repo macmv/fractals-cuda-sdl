@@ -12,6 +12,7 @@ public:
   double* dir; // [0] is 0-1 x rotation, where 0 is 0 deg and 1 is 360 deg, [1] is 0-1 y rot where 1 is straight up and 0 is straight down
   const double fov = 70; // in degrees
   std::set<SDL_Keycode> keys;
+  int screenWidth, screenHeight;
 
 public:
   Camera();

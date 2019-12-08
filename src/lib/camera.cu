@@ -19,18 +19,20 @@ Camera::Camera() {
   dir[0] = 0;
   dir[1] = 0;
   gpuErrchk(cudaPeekAtLastError());
+  SDL_ShowCursor(SDL_DISABLE);
   printf("Initialized camera\n");
 }
 
 __device__
 void Camera::getDeltaFrom2D(double x, double y, double* delta) {
-  delta[0] = cos((dir[0] + (x - 0.5) * fov) / 180 * M_PI);
-  delta[1] = dir[1] + (y - 0.5) * (fov * (16.0/9)) / 180;
-  delta[2] = sin((dir[0] + (x - 0.5) * fov) / 180 * M_PI);
-  float len = sqrt(pow(delta[0], 2) + pow(delta[1], 2) + pow(delta[2], 2));
-  delta[0] /= len;
-  delta[1] /= len;
-  delta[2] /= len;
+  // if fov is 70 deg, xDeg will be from -35 to 35 across whole screen
+  double xDeg = (x - 0.5) * fov;
+  double yDeg = (y - 0.5) * (fov * (screenWidth / screenHeight));
+  double cosY = cos((dir[1] + yDeg) / 180 * M_PI);
+  double sinY = sin((dir[1] + yDeg) / 180 * M_PI);
+  delta[0] = cos((dir[0] * cosY + xDeg) / 180 * M_PI);
+  delta[1] = sin((dir[0] * cosY + xDeg) / 180 * M_PI);
+  delta[2] = sinY;
 }
 
 void Camera::free() {
@@ -41,6 +43,7 @@ void Camera::free() {
 void Camera::rotate(double x, double y) {
   dir[0] += x;
   dir[1] += y;
+  printf("rotation: %f %f\n", dir[0], dir[1]);
 }
 
 void Camera::translate(double x, double y, double z) {
@@ -52,28 +55,37 @@ void Camera::translate(double x, double y, double z) {
 }
 
 void Camera::update(SDL_Window* window) {
+  double speed = 0.01;
   if (keys.find(SDLK_w) != keys.end()) {
-    translate(0.01, 0, 0);
+    translate(speed, 0, 0);
   }
   if (keys.find(SDLK_s) != keys.end()) {
-    translate(-0.01, 0, 0);
+    translate(-speed, 0, 0);
   }
   if (keys.find(SDLK_d) != keys.end()) {
-    translate(0, 0, 0.01);
+    translate(0, 0, speed);
   }
   if (keys.find(SDLK_a) != keys.end()) {
-    translate(0, 0, -0.01);
+    translate(0, 0, -speed);
   }
-  int w, h;
-  SDL_GetWindowSize(window, &w, &h);
+  if (keys.find(SDLK_SPACE) != keys.end()) {
+    translate(0, speed, 0);
+  }
+  if (keys.find(SDLK_LSHIFT) != keys.end()) {
+    translate(0, -speed, 0);
+  }
+  SDL_GetWindowSize(window, &screenWidth, &screenHeight);
   int x, y;
   SDL_GetMouseState(&x, &y);
-  SDL_WarpMouseInWindow(window, w / 2, h / 2);
+  SDL_WarpMouseInWindow(window, screenWidth / 2, screenHeight / 2);
   if (x != 0 || y != 0) {
-    int delta_x = x - w / 2;
-    int delta_y = y - h / 2;
-    rotate(delta_x / 20.0, delta_y / 2000.0);
+    int delta_x = screenWidth / 2 - x;
+    int delta_y = screenHeight / 2 - y;
+    rotate(delta_x / 20.0, delta_y / 20.0);
   }
+  // for (auto key = keys.begin(); key != keys.end(); ++key) {
+  //   printf("Key: %s\n", SDL_GetKeyName(*key));
+  // }
 }
 
 void Camera::keyDown(SDL_Keycode key) {
