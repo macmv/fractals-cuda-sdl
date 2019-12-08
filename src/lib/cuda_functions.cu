@@ -54,14 +54,14 @@ void drawPixels(int numPixels,
       // printf("Time: %f microseconds\n", (int) (stop_time - start_time) / 1987.0);
     }
     if (hit) {
-      buffer[pixel * 4 + 0] = (unsigned char) (steps * 4); // r
-      buffer[pixel * 4 + 1] = (unsigned char) (steps * 4); // g
-      buffer[pixel * 4 + 2] = (unsigned char) (steps * 4); // b
+      buffer[pixel * 4 + 0] = 0x00; // b
+      buffer[pixel * 4 + 1] = 0xFF; // g
+      buffer[pixel * 4 + 2] = 0x00; // r
       buffer[pixel * 4 + 3] = 0x00; // a
     } else {
-      buffer[pixel * 4 + 0] = 0xFF; // r
-      buffer[pixel * 4 + 1] = 0x00; // g
-      buffer[pixel * 4 + 2] = 0xFF; // b
+      buffer[pixel * 4 + 0] = (unsigned char) (steps * 4); // b
+      buffer[pixel * 4 + 1] = (unsigned char) (steps * 4); // g
+      buffer[pixel * 4 + 2] = (unsigned char) (steps * 4); // r
       buffer[pixel * 4 + 3] = 0x00; // a
     }
   }
